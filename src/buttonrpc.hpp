@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <map>
-#include <string>
 #include <sstream>
 #include <functional>
 #include <zmq.hpp> //这个是zeroMQ的头文件

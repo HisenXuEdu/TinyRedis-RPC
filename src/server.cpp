@@ -2,7 +2,7 @@
 #include "buttonrpc.hpp"
 
 int main() {
-   buttonrpc server;  
+    buttonrpc server;  
     server.as_server(5555);
     //server.bind("redis_command", redis_command);
     RedisServer::getInstance()->start();

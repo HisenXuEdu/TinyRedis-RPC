@@ -314,6 +314,7 @@ std::string RedisHelper::append(const std::string&key,const std::string &value){
 
 
 RedisHelper::RedisHelper(){
+    redisDataBase=std::make_shared<SkipList<std::string, RedisValue>>();
     FileCreator::createFolderAndFiles(DEFAULT_DB_FOLDER,DATABASE_FILE_NAME,DATABASE_FILE_NUMBER);
     std::string filePath=getFilePath();
     loadData(filePath);

@@ -15,7 +15,8 @@ private:
     // static const std::string DATABASE_FILE_NAME;
     // static const int DATABASE_FILE_NUMBER;
     std::string dataBaseIndex="0"; //当前数据库索引
-    std::shared_ptr<SkipList<std::string, RedisValue>> redisDataBase = std::make_shared<SkipList<std::string, RedisValue>>(); //数据库
+    //std::shared_ptr<SkipList<std::string, RedisValue>> redisDataBase = std::make_shared<SkipList<std::string,RedisValue>> (SkipList<std::string,RedisValue>()); //数据库
+    std::shared_ptr<SkipList<std::string, RedisValue>> redisDataBase = nullptr;
 public:
     RedisHelper();
     ~RedisHelper();
