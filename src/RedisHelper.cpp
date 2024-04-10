@@ -162,6 +162,7 @@ std::string RedisHelper::setex(const std::string& key, const RedisValue& value){
     if(currentNode==nullptr){
         return "key: "+ key +" does not exist!";
     }else{
+        //这样会有并发性的问题吧
         currentNode->value=value;
     }
     return "OK";

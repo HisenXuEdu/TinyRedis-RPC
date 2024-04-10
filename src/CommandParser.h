@@ -13,7 +13,7 @@ class CommandParser {
 protected:
     static std::shared_ptr<RedisHelper> redisHelper; //静态成员变量，所有解析器共享一个RedisHelper 
 public:
-    static void setRedisHelper(std::shared_ptr<RedisHelper> helper) { redisHelper = helper; }
+    static void setRedisHelper(std::shared_ptr<RedisHelper> helper) { redisHelper = helper; }  //饿汉模式所以提前通过这个函数创建单例对象
     static std::shared_ptr<RedisHelper> getRedisHelper() { return redisHelper; }  //饿汉模式
     virtual std::string parse(std::vector<std::string>& tokens) = 0; //纯虚函数，解析命令
 };

@@ -236,6 +236,7 @@ std::string RedisServer::getDate() {
 }
  //信号处理函数
 void RedisServer::signalHandler(int sig) {
+    std::cout<<"sig"<<std::endl;
     if (sig == SIGINT) {
         CommandParser::getRedisHelper()->flush();
         exit(0);

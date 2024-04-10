@@ -195,7 +195,7 @@ void SkipList<Key,Value>::loadFile(std::string load_path){
 
     readFile.open(load_path); //打开文件
     if(!readFile.is_open()){ 
-        mutex.unlock();
+        mutex.unlock();  //这里都没有加锁为什么要解锁呢？
         return;
     }
     std::string line;

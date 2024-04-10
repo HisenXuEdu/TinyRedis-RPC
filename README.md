@@ -17,6 +17,7 @@ sudo apt-get install libzmq3-dev
  mkdir build
  cd build
  cmake .. //生成Makefile文件
+ cmake -DCMAKE_BUILD_TYPE=Debug ..  //debug版本
 
  make
 ```

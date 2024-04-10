@@ -76,7 +76,7 @@ class Serializer
 {
     
 public:
-    enum ByteOrder
+    enum ByteOrder   //大小端序
     {
         BigEndian = 0,
         LittleEndian = 1
@@ -108,7 +108,7 @@ public:
     }
     void byte_orser(char* in, int len){
 		if (m_byteorder == BigEndian){
-			reverse(in, in+len); //大端的化直接反转 
+			reverse(in, in+len); //大端的化直接反转 ，网络传输是大端序
 		}
 	}
     /**

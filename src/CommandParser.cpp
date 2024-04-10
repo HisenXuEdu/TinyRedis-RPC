@@ -2,6 +2,7 @@
 
 // 静态成员变量的初始化
 std::shared_ptr<RedisHelper> CommandParser::redisHelper = std::make_shared<RedisHelper>();
+//饿汉模式所以提前通过这个函数创建单例对象
 
 // SelectParser 
 //select命令来选择数据库

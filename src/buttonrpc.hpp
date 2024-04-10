@@ -40,7 +40,7 @@ public:
     template<typename T>
     class value_t{
        public:
-         typedef typename type_xx<T>::type type; //通过typename告诉编译器type_xx<T>::type 是一个类型
+         typedef typename type_xx<T>::type type; //通过typename告诉编译器type_xx<T>::type 是一个类型，相当于T重命名为type
          typedef std::string msg_type;
          typedef uint16_t code_type;
 
@@ -55,7 +55,7 @@ public:
         void set_code(code_type code) { code_ = code; }    
         void set_msg(msg_type msg) { msg_ = msg; }
 
-        friend Serializer& operator >> (Serializer& in, value_t<T>& d) { //定义友元函数
+        friend Serializer& operator >> (Serializer& in, value_t<T>& d) { //定义友元函数    //XXX：这两个友元函数好像并不会被调用啊
             in >> d.code_ >> d.msg_; 
 			if (d.code_ == 0) {
 				in >> d.val_;
@@ -261,9 +261,10 @@ void buttonrpc::recv( zmq::message_t& data )
 inline void buttonrpc::set_timeout(uint32_t ms)
 {
 	// only client can set
-	// if (m_role == RPC_CLIENT) {
-	// 	m_socket->setsockopt(ZMQ_RCVTIMEO, ms); //设置接收超时时间
-	// }
+	if (m_role == RPC_CLIENT) {
+		m_socket->setsockopt(ZMQ_RCVTIMEO, ms); //设置接收超时时间
+	}
+	//该选项用于设置 ZeroMQ 套接字的接收超时时间。参数 ms 表示以毫秒为单位的超时时间。服务端没开启会迅速返回。
 }
 
 void buttonrpc::run()
@@ -282,9 +283,9 @@ void buttonrpc::run()
 		Serializer* r = call_(funname, ds.current(), ds.size()- funname.size()); //调用函数
 
 		zmq::message_t retmsg (r->size()); //创建一个消息
-		memcpy (retmsg.data (), r->data(), r->size()); //拷贝数据
+		memcpy (retmsg.data (), r->data(), r->size()); //拷贝数据，memcpy要指定拷贝多少字节。
 		send(retmsg); //发送数据
-		delete r;
+		delete r;  //防止内存泄漏
 	}
 
 }
@@ -315,6 +316,7 @@ template<typename F, typename S>
 inline void buttonrpc::bind(std::string name, F func, S* s) //类函数
 {
 	m_handlers[name] = std::bind(&buttonrpc::callproxy<F, S>, this, func, s, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	//它是一个函数适配器，接受一个可调用对象（callable object），生成一个新的可调用对象来“适应”原对象的参数列表。
 }
 
 template<typename F>
@@ -475,37 +477,37 @@ inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1)
 	return net_call<R>(ds);
 }
 
-template<typename R, typename P1, typename P2>
-inline buttonrpc::value_t<R> buttonrpc::call( std::string name, P1 p1, P2 p2 )
-{
-	Serializer ds;
-	ds << name << p1 << p2;
-	return net_call<R>(ds);
-}
+// template<typename R, typename P1, typename P2>
+// inline buttonrpc::value_t<R> buttonrpc::call( std::string name, P1 p1, P2 p2 )
+// {
+// 	Serializer ds;
+// 	ds << name << p1 << p2;
+// 	return net_call<R>(ds);
+// }
 
-template<typename R, typename P1, typename P2, typename P3>
-inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3)
-{
-	Serializer ds;
-	ds << name << p1 << p2 << p3;
-	return net_call<R>(ds);
-}
+// template<typename R, typename P1, typename P2, typename P3>
+// inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3)
+// {
+// 	Serializer ds;
+// 	ds << name << p1 << p2 << p3;
+// 	return net_call<R>(ds);
+// }
 
-template<typename R, typename P1, typename P2, typename P3, typename P4>
-inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3, P4 p4)
-{
-	Serializer ds;
-	ds << name << p1 << p2 << p3 << p4;
-	return net_call<R>(ds);
-}
+// template<typename R, typename P1, typename P2, typename P3, typename P4>
+// inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3, P4 p4)
+// {
+// 	Serializer ds;
+// 	ds << name << p1 << p2 << p3 << p4;
+// 	return net_call<R>(ds);
+// }
 
-template<typename R, typename P1, typename P2, typename P3, typename P4, typename P5>
-inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
-{
-	Serializer ds;
-	ds << name << p1 << p2 << p3 << p4 << p5;
-	return net_call<R>(ds);
-}
+// template<typename R, typename P1, typename P2, typename P3, typename P4, typename P5>
+// inline buttonrpc::value_t<R> buttonrpc::call(std::string name, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
+// {
+// 	Serializer ds;
+// 	ds << name << p1 << p2 << p3 << p4 << p5;
+// 	return net_call<R>(ds);
+// }
 
 
 

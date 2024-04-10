@@ -15,12 +15,23 @@ int main() {
         //发送数据
         std::cout << hostName << ":" << port << "> ";
         std::getline(std::cin, message);
-        string res = client.call<string>("redis_command", message).val();
+        // string res = client.call<string>("redis_command", message).val();
+        // //添加结束字符 
+        // if(res.find("stop") != std::string::npos){
+        //     break;
+        // }
+        // std::cout << res << std::endl;
+        buttonrpc::value_t<string> res=client.call<string>("redis_command", message);
+        if(res.error_code()){
+            cout<< res.error_msg()<<std::endl;
+        }
+        
         //添加结束字符 
-        if(res.find("stop") != std::string::npos){
+
+        else if(res.val().find("stop") != std::string::npos){
             break;
         }
-        std::cout << res << std::endl;
+        else cout<< res.val()<<std::endl;
     }
     return 0;
 }

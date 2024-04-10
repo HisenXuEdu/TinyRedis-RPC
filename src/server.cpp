@@ -9,7 +9,4 @@ int main() {
     server.bind("redis_command", &RedisServer::handleClient, RedisServer::getInstance());
    // std::cout << "run rpc server on: " << 5555 << std::endl;
     server.run();
-
-
-    RedisServer::getInstance()->start();
 }
