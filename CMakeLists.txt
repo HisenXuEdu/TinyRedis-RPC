@@ -27,7 +27,7 @@ file(MAKE_DIRECTORY ${BIN_DIR})
 # 编译server
 add_executable(server ${SRC_DIR}/server.cpp ${SOURCE_FILES})
 set_target_properties(server PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-target_link_libraries(server zmq)
+target_link_libraries(server zmq pthread)
 # 编译client
 add_executable(client ${SRC_DIR}/client.cpp)
 set_target_properties(client PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})

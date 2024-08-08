@@ -8,6 +8,10 @@
 #define DEFAULT_DB_FOLDER "data_files"
 #define DATABASE_FILE_NAME "db"
 #define DATABASE_FILE_NUMBER 15
+#include <pthread.h>
+#include <unistd.h>
+#include<sys/wait.h>
+
 //增删改查操作
 class RedisHelper{
 private:
@@ -17,6 +21,9 @@ private:
     std::string dataBaseIndex="0"; //当前数据库索引
     //std::shared_ptr<SkipList<std::string, RedisValue>> redisDataBase = std::make_shared<SkipList<std::string,RedisValue>> (SkipList<std::string,RedisValue>()); //数据库
     std::shared_ptr<SkipList<std::string, RedisValue>> redisDataBase = nullptr;
+
+    pthread_t * m_thread;
+
 public:
     RedisHelper();
     ~RedisHelper();
@@ -25,6 +32,10 @@ private:
     //从文件中加载数据  持久性保存数据
     void loadData(std::string loadPath);  
     std::string getFilePath();
+
+    void RDBThread();
+    static void* RDB(void* arg);
+
 public:
     void flush(); //写入文件 
     //选择数据库

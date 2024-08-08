@@ -42,9 +42,10 @@ private:
     void replaceText(std::string &text, const std::string &toReplaceText, const std::string &replaceText);
     std::string getDate();
     string executeTransaction(std::queue<std::string>&commandsQueue);
+
 public:
 string handleClient(string receivedData);
-   static RedisServer* getInstance();
+    static RedisServer* getInstance();
     void start();
 };
 

@@ -14,7 +14,8 @@
                 "${fileDirname}/ParserFlyweightFactory.cpp",
                 "${fileDirname}/RedisValue/Parse.cpp",
                 "${fileDirname}/RedisValue/RedisValue.cpp",     
-                "-lzmq",           
+                "-lzmq", 
+                "-lpthread",          
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],

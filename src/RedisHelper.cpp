@@ -2,6 +2,7 @@
 #include"FileCreator.h"
 
 
+
 void RedisHelper::flush(){
     // 打开文件并覆盖写入
     std::string filePath=getFilePath();
@@ -319,9 +320,40 @@ RedisHelper::RedisHelper(){
     FileCreator::createFolderAndFiles(DEFAULT_DB_FOLDER,DATABASE_FILE_NAME,DATABASE_FILE_NUMBER);
     std::string filePath=getFilePath();
     loadData(filePath);
+    RDBThread();
 }
 RedisHelper::~RedisHelper(){flush();}
 
+void RedisHelper::RDBThread(){
+    m_thread = new pthread_t;
+    if(pthread_create(m_thread, NULL, RDB, this ) != 0) {//没与对象绑定，需要是static的。
+        delete m_thread;
+        throw std::exception();
+    }
+    
+    if( pthread_detach( *m_thread ) ) {
+        delete m_thread;
+        throw std::exception();
+    }
+}
+
+void* RedisHelper::RDB(void* arg){
+    RedisHelper* redisHelper = (RedisHelper*) arg;
+    pid_t fpid;
+    while(1){
+        
+        
+        fpid = fork();
+        if(fpid<0) continue;
+        if(fpid==0){
+            // printf("child");
+            redisHelper->flush();
+            exit(0);
+        }
+        sleep(10);
+        wait(NULL);	  //todo 这里要改一下，否则可能不能保证是10s
+    }
+}
 
 //列表操作
 // LPUSH key value：将一个值插入到列表头部。
@@ -452,10 +484,10 @@ std::string RedisHelper::hset(const std::string&key,const std::vector<std::strin
     if(currentNode==nullptr){
         std::map<std::string,RedisValue>data;
         RedisValue redisHash(data) ;
-        RedisValue::object& valueMap = redisHash.objectItems();
+        RedisValue::object& valueMap = redisHash.objectItems();  //mark 这里获取实际的map，然后在这里进行响应的插入操作
         for(int i=0;i<filed.size();i+=2){
             std::string hkey=filed[i];
-            RedisValue hval=filed[i+1];
+            RedisValue hval=filed[i+1];   //构建了一个string类型的RedisValue，map实际存储的值就是string类型的RedisValue。
             if(!valueMap.count(hkey)){
                 valueMap[hkey] = hval;
                 count++;

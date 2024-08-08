@@ -7,6 +7,7 @@ RedisServer* RedisServer::getInstance()
 	return &redis;
 }
 
+
 void RedisServer::printLogo() {
     std::ifstream ifs(logoFilePath);
     if(!ifs.is_open()){
